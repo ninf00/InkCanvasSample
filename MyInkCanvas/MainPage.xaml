@@ -7,6 +7,17 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton Icon="Accept"
+                          Label="Eraser"
+                          Click="AppBarEraserButton_Click" />            
+            <AppBarButton Icon="Clear"
+                          Label="Clear"
+                          Click="AppBarClearButton_Click" />
+        </CommandBar>
+    </Page.BottomAppBar>
+
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <InkCanvas x:Name="InkCanvas" />
     </Grid>

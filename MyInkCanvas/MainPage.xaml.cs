@@ -41,5 +41,33 @@ namespace MyInkCanvas
             };
             this.InkCanvas.InkPresenter.UpdateDefaultDrawingAttributes(attr);
         }
+
+        /// <summary>
+        /// Clearボタン押したときのイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AppBarClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Canvas上の線をすべて消す
+            this.InkCanvas.InkPresenter.StrokeContainer.Clear();
+        }
+
+        /// <summary>
+        /// Eraserボタン押したときのイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AppBarEraserButton_Click(object sender, RoutedEventArgs e)
+        {
+            // モード切替
+            if(this.InkCanvas.InkPresenter.InputProcessingConfiguration.Mode == InkInputProcessingMode.Inking)
+            {
+                this.InkCanvas.InkPresenter.InputProcessingConfiguration.Mode = InkInputProcessingMode.Erasing;
+            } else
+            {
+                this.InkCanvas.InkPresenter.InputProcessingConfiguration.Mode = InkInputProcessingMode.Inking;
+            }
+        }
     }
 }
