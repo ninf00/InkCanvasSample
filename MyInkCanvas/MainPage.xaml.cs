@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage.Streams;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Input.Inking;
@@ -40,6 +42,71 @@ namespace MyInkCanvas
                 Size = new Size(10, 10),
             };
             this.InkCanvas.InkPresenter.UpdateDefaultDrawingAttributes(attr);
+        }
+
+        /// <summary>
+        /// Openボタン押したときのイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void AppBarOpenButton_Click(object sender, RoutedEventArgs e)
+        {
+            // ファイルを選択するためのピッカーを生成
+            var openPicker = new Windows.Storage.Pickers.FileOpenPicker();
+            // 場所はピクチャーライブラリを表示
+            openPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
+            openPicker.FileTypeFilter.Add(".png"); // ファイルの拡張子フィルターとして".png"をセット
+            Windows.Storage.StorageFile file = await openPicker.PickSingleFileAsync();
+            if(null != file)
+            {
+                // 選択したファイルからストリームを取得する
+                using (var stream = await file.OpenSequentialReadAsync())
+                {
+                    try
+                    {
+                        // ストリームをInkCanvaseにロードする
+                        await this.InkCanvas.InkPresenter.StrokeContainer.LoadAsync(stream);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Saveボタン押した時のイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void AppBarSaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            // ファイル保存用のピッカーを生成
+            var savePicker = new Windows.Storage.Pickers.FileSavePicker();
+            // 場所はピクチャーライブラリを表示
+            savePicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
+            // ファイルタイプとしてpngを追加
+            savePicker.FileTypeChoices.Add("Png", new System.Collections.Generic.List<string> { ".png" });
+            Windows.Storage.StorageFile file = await savePicker.PickSaveFileAsync(); // 保存するファイルを取得
+            if(null != file)
+            {
+                try
+                {
+                    // 保存するファイルからストリーム取得
+                    using (IRandomAccessStream stream = await file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite))
+                    {
+                        // InkCanvasのストロークをストリームに書き込み
+                        await this.InkCanvas.InkPresenter.StrokeContainer.SaveAsync(stream);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
+
         }
 
         /// <summary>

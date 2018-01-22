@@ -9,6 +9,13 @@
 
     <Page.BottomAppBar>
         <CommandBar>
+            <AppBarButton Icon="OpenFile"
+                          Label="Open"
+                          Click="AppBarOpenButton_Click" />
+            <AppBarButton Icon="Save"
+                          Label="Save"
+                          Click="AppBarSaveButton_Click" />
+            <AppBarSeparator />
             <AppBarButton Icon="Accept"
                           Label="Eraser"
                           Click="AppBarEraserButton_Click" />            
